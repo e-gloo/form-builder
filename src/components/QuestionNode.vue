@@ -5,8 +5,15 @@ import { Position, Handle, useVueFlow } from '@vue-flow/core'
 import type { NodeProps } from '@vue-flow/core'
 import { useFormBuilder, QUESTION_TYPES, CHOICE_TYPES, VALUE_TYPES, CHOICE_HEIGHT } from '../composables/useFormBuilder'
 
-const { addQuestionChoice, removeQuestionChoice } = useFormBuilder();
-const { updateNodeData } = useVueFlow();
+const { addQuestionChoice, removeQuestionChoice, addConnection } = useFormBuilder();
+const { updateNodeData, onConnect } = useVueFlow();
+
+onConnect(({ source, target }) => {
+  if (target != props.id) {
+    return;
+  }
+  addConnection(source, target)
+})
 
 const props = defineProps<NodeProps>()
 

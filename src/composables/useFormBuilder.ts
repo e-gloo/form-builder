@@ -32,6 +32,8 @@ function useFormBuilder() {
         questionType: QUESTION_TYPES[0].value,
         choiceType: CHOICE_TYPES[0].value,
         valueType: VALUE_TYPES[0].value,
+        next: '',
+        nextEdge: '',
       },
     })
   }
@@ -122,16 +124,28 @@ function useFormBuilder() {
     }
   }
 
-  instance.onConnect((c) => {
-    if (c.source === c.target) {
-      return
+  const addConnection = (source: string, target: string) => {
+    if (source === target) {
+      return ;
     }
 
-    instance.addEdges({
-      source: c.source,
-      target: c.target,
-    })
-  })
+    const sourceNode = instance.findNode(source);
+    const targetNode = instance.findNode(target);
+    if (!sourceNode || !targetNode) {
+      return;
+    }
+
+    if (sourceNode.data.next === targetNode.id) {
+      return;
+    }
+
+    instance.removeEdges(sourceNode.data.nextEdge);
+
+    sourceNode.data.next = targetNode.id;
+    const id = Date.now().toString()
+    instance.addEdges({id, source, target});
+    sourceNode.data.nextEdge = id;
+  }
 
   const logInstance = () => {
     console.log(instance.getNodes.value)
@@ -148,6 +162,7 @@ function useFormBuilder() {
     addQuestionChoice,
     reorderQuestionChoice,
     removeQuestionChoice,
+    addConnection,
     logInstance,
     getInstance,
   }
