@@ -2,10 +2,10 @@
 import { ref, onMounted, computed, watch } from 'vue';
 
 import { Position, Handle, useVueFlow } from '@vue-flow/core'
-import type { NodeProps, VueFlowStore } from '@vue-flow/core'
+import type { NodeProps } from '@vue-flow/core'
 import { useFormBuilder, QUESTION_TYPES, CHOICE_TYPES, VALUE_TYPES, CHOICE_HEIGHT } from '../composables/useFormBuilder'
 
-const { addQuestionChoice, getInstance, removeQuestionChoice } = useFormBuilder();
+const { addQuestionChoice, removeQuestionChoice } = useFormBuilder();
 const { updateNodeData } = useVueFlow();
 
 const props = defineProps<NodeProps>()
@@ -56,10 +56,6 @@ function addChoice(questionID: string) {
   addQuestionChoice(questionID, y);
 }
 
-function resizeInput() {
-  nodeWidth.value = currentNode.value.scrollWidth - 20;
-}
-
 const currentHeight = computed<string>(() => {
   return props.data.choices.length > 0 ? `${nodeHeight.value + (props.data.choices.length * CHOICE_HEIGHT)}px` : '100%';
 });
@@ -77,14 +73,14 @@ const currentHeight = computed<string>(() => {
 
       <div class="flex flex-col gap-y-2 w-full">
         <div class="flex gap-x-2 justify-start items-center w-full">
-          <label v-for="type in QUESTION_TYPES" :for="id + '_question_' + type.value" class="question-config-label">
+          <label v-for="type in QUESTION_TYPES" :key="id + '_question_' + type.value" :for="id + '_question_' + type.value" class="question-config-label">
             <p class="text-gray-700">{{ type.label }}</p>
             <input v-model="questionType" type="radio" :name="id + '_' + type.label" :value="type.value"
               :id="id + '_question_' + type.value" class="sr-only" />
           </label>
           <template v-if="questionType == 'choice'">
             <span>|</span>
-            <label v-for="type in CHOICE_TYPES" :for="id + '_choice_' + type.value" class="question-config-label">
+            <label v-for="type in CHOICE_TYPES" :key="id + '_choice_' + type.value" :for="id + '_choice_' + type.value" class="question-config-label">
               <p class="text-gray-700">{{ type.label }}</p>
               <input v-model="choiceType" type="radio" :name="id + '_' + type.label" :value="type.value"
                 :id="id + '_choice_' + type.value" class="sr-only" />
@@ -92,7 +88,7 @@ const currentHeight = computed<string>(() => {
           </template>
         </div>
         <div class="flex gap-x-2 justify-start items-center w-full">
-          <label v-for="type in VALUE_TYPES" :for="id + '_value_' + type.value" class="question-config-label">
+          <label v-for="type in VALUE_TYPES" :key="id + '_value_' + type.value" :for="id + '_value_' + type.value" class="question-config-label">
             <p class="text-gray-700">{{ type.label }}</p>
             <input v-model="valueType" type="radio" :name="id + '_' + type.label" :value="type.value"
               :id="id + '_value_' + type.value" class="sr-only" />

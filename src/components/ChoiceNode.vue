@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { Position, Handle } from '@vue-flow/core'
 import type { NodeProps } from '@vue-flow/core'
 import { NodeToolbar } from '@vue-flow/node-toolbar'
@@ -9,10 +9,6 @@ const props = defineProps<NodeProps>()
 const { reorderQuestionChoice, removeQuestionChoice } = useFormBuilder();
 const setOrder = ref(false);
 const order = ref(props.data.position + 1);
-
-//onMounted(() => {
-//  console.log(props.data);
-//});
 
 watch(props.data, () => {
   order.value = props.data.position + 1;

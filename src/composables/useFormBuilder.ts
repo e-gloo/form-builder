@@ -79,7 +79,7 @@ function useFormBuilder() {
     if (order < 0 || order > choicesLength) {
       return
     }
-    let index = question.data.choices.findIndex((c: Node) => {
+    const index = question.data.choices.findIndex((c: Node) => {
       return c.id == choiceID
     })
 

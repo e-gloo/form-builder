@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Sidebar from './components/Sidebar.vue';
+import SideBar from './components/SideBar.vue';
 </script>
 
 <template>
   <div class="flex w-full h-screen">
-    <sidebar></sidebar>
+    <SideBar/>
     <RouterView />
   </div>
 </template>

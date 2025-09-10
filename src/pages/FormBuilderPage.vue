@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useVueFlow } from '@vue-flow/core';
-
 import FormBuilder from '../components/FormBuilder.vue';
 import { useFormBuilder } from '../composables/useFormBuilder';
 
