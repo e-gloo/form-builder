@@ -7,10 +7,13 @@
 @import '@vue-flow/node-resizer/dist/style.css';
 
 @import "tailwindcss";
+@plugin "daisyui" {
+  themes:  light --default, dark --prefersdark, emerald;
+};
 
 @layer components {
   .question-config-label {
-    @apply flex items-center justify-center gap-4 rounded border border-blue-300 bg-white py-1 px-3 text-sm font-medium shadow-sm transition-colors hover:bg-gray-50 has-checked:border-blue-600 has-checked:ring-1 has-checked:ring-blue-600;
+    @apply flex items-center justify-center gap-4 rounded border border-neutral bg-white py-1 px-3 text-sm font-medium shadow-sm transition-colors hover:cursor-pointer hover:bg-gray-50 has-checked:border-primary has-checked:ring-1 has-checked:ring-primary;
   }
   .form-input {
     @apply w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow;
