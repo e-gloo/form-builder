@@ -1,10 +1,16 @@
-<script setup lang="ts">
+<script setup>
+  import { useDragAndDrop } from '../composables/useDnD'
 
+const { onDragStart } = useDragAndDrop
 </script>
 
 <template>
-  <div class="w-36 h-screen bg-cyan-100 border-r flex flex-col justify-center gap-y-4 p-2">
-    <router-link to="/" class="bg-cyan-200 hover:bg-cyan-300 border-solid p-2 rounded-xl flex justify-center">Form builder</router-link>
-    <router-link to="/form" class="bg-cyan-200 hover:bg-cyan-300 border-solid p-2 rounded-xl flex justify-center">Form</router-link>
-  </div>
+  <aside class="bg-gray-200 flex flex-col items-center p-2">
+    <div class="nodes">
+      <div class="border-2 border-primary rounded-lg bg-white flex justify-center items-center p-2" :draggable="true"
+        @dragstart="onDragStart($event, 'question')">
+        Drag me to the pane to add a question
+      </div>
+    </div>
+  </aside>
 </template>

@@ -6,7 +6,7 @@ import { NodeToolbar } from '@vue-flow/node-toolbar'
 import { useFormBuilder } from '../composables/useFormBuilder'
 
 const props = defineProps<NodeProps>()
-const { reorderQuestionChoice, removeQuestionChoice } = useFormBuilder();
+const { reorderQuestionChoice, removeQuestionChoice } = useFormBuilder;
 const setOrder = ref(false);
 const order = ref(props.data.position + 1);
 
@@ -34,7 +34,7 @@ const vFocus = {
 </script>
 
 <template>
-  <div class="p-2 rounded-xl">
+  <div class="px-6 py-2 rounded-xl">
     <div class="flex gap-x-4 justify-start items-center">
       <span>#{{ data.position + 1 }}</span>
       <input type="text" class="form-input">
@@ -50,15 +50,6 @@ const vFocus = {
       </div>
       <button type="button" class="w-full" @click="removeQuestionChoice(id)">Delete</button>
     </NodeToolbar>
-    <Handle type="source" :position="Position.Right" />
+    <Handle type="source" :position="Position.Right" class="handle-source" />
   </div>
 </template>
-
-<style scoped>
-.vue-flow__handle {
-  height: 24px;
-  width: 10px;
-  background: #aaa;
-  border-radius: 4px
-}
-</style>

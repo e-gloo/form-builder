@@ -3,5 +3,7 @@ import FormPreview from '../components/FormPreview.vue';
 </script>
 
 <template>
-  <FormPreview />
+  <div class="w-full h-full flex gap-4">
+    <FormPreview />
+  </div>
 </template>

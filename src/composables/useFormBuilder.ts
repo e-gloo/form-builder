@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid'
+import { ref, type Ref } from 'vue'
 import { useVueFlow, type VueFlowStore } from '@vue-flow/core'
 import type { Node } from '@vue-flow/core'
 
@@ -14,17 +16,37 @@ export const VALUE_TYPES = [
   { value: 'number', label: 'Number' },
 ]
 
-export const CHOICE_HEIGHT = 75;
+export const CHOICE_HEIGHT = 75
 
 function useFormBuilder() {
-  const instance: VueFlowStore = useVueFlow()
+  const startNodeId: Ref<string> = ref('')
+  const instance: VueFlowStore = useVueFlow('vue-flow-project')
 
-  const addQuestion = () => {
-    const id = Date.now().toString()
+  const addQuestion = (x: number, y: number, isStart: boolean = false) => {
+    const id = nanoid()
+
+    /**
+     * Align node position after drop, so it's centered to the mouse
+     *
+     * We can hook into events even in a callback, and we can remove the event listener after it's been called.
+     */
+    const { off } = instance.onNodesInitialized(() => {
+      instance.updateNode(id, (node) => {
+        return {
+          position: {
+            x: node.position.x - node.dimensions.width / 2,
+            y: node.position.y - node.dimensions.height / 2,
+          },
+        }
+      })
+
+      off()
+    })
+
     instance.addNodes({
       id,
       type: 'question',
-      position: { x: 150, y: 650 },
+      position: { x, y },
       data: {
         label: `Question ${id}`,
         value: '',
@@ -34,8 +56,13 @@ function useFormBuilder() {
         valueType: VALUE_TYPES[0].value,
         next: '',
         nextEdge: '',
+        isStart: isStart,
       },
     })
+    if (isStart) {
+      startNodeId.value = id
+    }
+    return id
   }
 
   const removeQuestion = (questionID: string) => {
@@ -47,7 +74,7 @@ function useFormBuilder() {
     if (!question) {
       return
     }
-    const id = Date.now().toString()
+    const id = nanoid()
     const node = {
       id,
       position: { x: 10, y },
@@ -67,7 +94,6 @@ function useFormBuilder() {
       },
     })
 
-
     question.data.choices.push(node)
   }
 
@@ -78,27 +104,31 @@ function useFormBuilder() {
     }
     const choicesLength = question.data.choices.length
 
-    if (order < 0 || order > choicesLength) {
+    if (order < 0 || order >= choicesLength) {
       return
     }
     const index = question.data.choices.findIndex((c: Node) => {
       return c.id == choiceID
     })
 
-    const choice = question.data.choices[index];
-    const initY = question.data.choices[order].position.y;
-    choice.data.position = order;
-    if (order < index) {
-      let i = order;
-      while (i < index) {
-        question.data.choices[i].position.y += CHOICE_HEIGHT;
-        question.data.choices[i].data.position++;
-        i++;
-      }
+    const choice = question.data.choices[index]
+    const initY = question.data.choices[order].position.y
+    choice.data.position = order
+    let i = order
+    let step = 1
+    let height = CHOICE_HEIGHT
+    if (order > index) {
+      step = -1
+      height = -CHOICE_HEIGHT
     }
-    question.data.choices.splice(index, 1);
-    choice.position.y = initY;
-    question.data.choices.splice(order, 0, choice);
+    while (i != index) {
+      question.data.choices[i].position.y += height
+      question.data.choices[i].data.position += step
+      i += step
+    }
+    question.data.choices.splice(index, 1)
+    choice.position.y = initY
+    question.data.choices.splice(order, 0, choice)
   }
 
   const removeQuestionChoice = (choiceID: string) => {
@@ -126,25 +156,25 @@ function useFormBuilder() {
 
   const addConnection = (source: string, target: string) => {
     if (source === target) {
-      return ;
+      return
     }
 
-    const sourceNode = instance.findNode(source);
-    const targetNode = instance.findNode(target);
+    const sourceNode = instance.findNode(source)
+    const targetNode = instance.findNode(target)
     if (!sourceNode || !targetNode) {
-      return;
+      return
     }
 
     if (sourceNode.data.next === targetNode.id) {
-      return;
+      return
     }
 
-    instance.removeEdges(sourceNode.data.nextEdge);
+    instance.removeEdges(sourceNode.data.nextEdge)
 
-    sourceNode.data.next = targetNode.id;
-    const id = Date.now().toString()
-    instance.addEdges({id, source, target});
-    sourceNode.data.nextEdge = id;
+    sourceNode.data.next = targetNode.id
+    const id = nanoid()
+    instance.addEdges({ id, source, target })
+    sourceNode.data.nextEdge = id
   }
 
   const logInstance = () => {
@@ -168,4 +198,8 @@ function useFormBuilder() {
   }
 }
 
-export { useFormBuilder }
+const formBuilder = useFormBuilder()
+
+export {
+  formBuilder as useFormBuilder
+}
