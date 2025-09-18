@@ -5,7 +5,7 @@ import { Position, Handle, useVueFlow } from '@vue-flow/core'
 import type { NodeProps } from '@vue-flow/core'
 import { useFormBuilder, QUESTION_TYPES, CHOICE_TYPES, VALUE_TYPES, CHOICE_HEIGHT } from '../composables/useFormBuilder'
 
-const { addQuestionChoice, removeQuestionChoice, addConnection } = useFormBuilder;
+const { addQuestionChoice, removeQuestionChoice, addConnection, setQuestionAsFormStart } = useFormBuilder;
 const { updateNodeData, onConnect } = useVueFlow('vue-flow-project');
 
 onConnect(({ source, target }) => {
@@ -71,7 +71,15 @@ const currentHeight = computed<string>(() => {
   <div class="w-full p-6 bg-white border-neutral border-2 rounded-xl min-h-full" :style="{ height: currentHeight }"
     ref="currentNode">
     <div class="flex flex-col gap-y-4 ">
-      <p>Question</p>
+      <div class="w-full flex justify-between items-center">
+        <p>Question</p>
+        <button v-if="!data.isStart" class="btn btn-xs text-xs" @click="setQuestionAsFormStart(id)">
+          Make form start
+        </button>
+        <span v-else class="badge badge-primary text-xs font-semibold rounded-lg" >
+          Form start
+        </span>
+      </div>
       <input type="text" class="no-drag ease form-input" @input="updateValue" ref='input' :value="data.value">
       <span v-html="data.value.replaceAll(' ', '&nbsp;')" class="invisible h-0 text-sm mx-4"></span>
 
@@ -111,4 +119,3 @@ const currentHeight = computed<string>(() => {
     <Handle type="source" :position="Position.Right" class="handle-source" />
   </div>
 </template>
-

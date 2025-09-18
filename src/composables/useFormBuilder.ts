@@ -177,6 +177,21 @@ function useFormBuilder() {
     sourceNode.data.nextEdge = id
   }
 
+  function setQuestionAsFormStart(nodeId: string) {
+    if (startNodeId.value) {
+      const node = instance.findNode(startNodeId.value)
+      if (node) {
+        node.data.isStart = false
+      }
+    }
+    const node = instance.findNode(nodeId)
+    if (!node) {
+      return
+    }
+    node.data.isStart = true
+    startNodeId.value = nodeId
+  }
+
   const logInstance = () => {
     console.log(instance.getNodes.value)
     console.log(instance.getEdges.value)
@@ -193,6 +208,7 @@ function useFormBuilder() {
     reorderQuestionChoice,
     removeQuestionChoice,
     addConnection,
+    setQuestionAsFormStart,
     logInstance,
     getInstance,
   }
